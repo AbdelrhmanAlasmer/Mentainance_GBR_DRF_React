@@ -226,38 +226,26 @@ class Reception(models.Model):
         self.save()
 
 
+# In your models.py
 class ReceptionPhoto(models.Model):
-    photo = models.ImageField(
-        upload_to='receptions/%Y/%m/%d/',
-        verbose_name="Photo"
-    )
-    description = models.CharField(
-        max_length=255, 
-        blank=True,
-        verbose_name="Description"
-    )
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
+    reception = models.ForeignKey(
+    'Reception',
+    on_delete=models.CASCADE,
+    related_name='photos',
+    null=True,  # Add this
+    blank=True  # Add this if you want admin to allow blank
+)
+    photo = models.ImageField(upload_to='receptions/%Y/%m/%d/', verbose_name="Photo")
+    description = models.CharField(max_length=255, blank=True, verbose_name="Description")
+    
     class Meta:
         verbose_name = "Reception Photo"
         verbose_name_plural = "Reception Photos"
-        ordering = ['-uploaded_at']
-
-    def __str__(self):
-        return f"Photo for {self.reception.case_number} - {self.description}"
-
+        ordering = ['-id']
 
 class Call(models.Model):
-    reception = models.ForeignKey(
-        Reception, 
-        on_delete=models.CASCADE, 
-        related_name='calls'
-    )
-    call_type = models.CharField(
-        max_length=50, 
-        choices=Reception.CallType.choices,
-        verbose_name="Call Type"
-    )
+    reception = models.ForeignKey(Reception, on_delete=models.CASCADE, related_name='calls')
+    call_type = models.CharField(max_length=50, choices=Reception.CallType.choices,verbose_name="Call Type")
     caller = models.ForeignKey(
         CustomUser,
         on_delete=models.SET_NULL,
@@ -267,11 +255,6 @@ class Call(models.Model):
     )
     summary = models.TextField(verbose_name="Call Summary")
     datetime = models.DateTimeField(default=timezone.now)
-    successful = models.BooleanField(
-        default=False,
-        verbose_name="Call Successful?",
-        help_text="Did the call reach the customer?"
-    )
     follow_up_required = models.BooleanField(default=False)
     follow_up_date = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(blank=True, verbose_name="Additional Notes")
@@ -286,25 +269,16 @@ class Call(models.Model):
 
 
 class RepairNote(models.Model):
-    reception = models.ForeignKey(
-        Reception,
-        on_delete=models.CASCADE,
-        related_name='repair_notes'
-    )
+    reception = models.ForeignKey(Reception,on_delete=models.CASCADE,related_name='repair_notes')
+    note = models.TextField(verbose_name="Note Content")
+    created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
         CustomUser,
         on_delete=models.SET_NULL,
         null=True,
         related_name='repair_notes'
     )
-    note = models.TextField(verbose_name="Note Content")
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_internal = models.BooleanField(
-        default=True,
-        verbose_name="Internal Note?",
-        help_text="Check if this note should not be visible to customers"
-    )
-
+   
     class Meta:
         ordering = ['-created_at']
         verbose_name = "Repair Note"
