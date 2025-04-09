@@ -1,0 +1,179 @@
+@baseUrl = http://127.0.0.1:8000/reception
+@manager_token = 99f984c28253206f0717dd23e4171d517e48deae
+@receptionist_token = 6e9ed5edcd5cf074bc4f2c0010f3a3fd7b059a74
+@technician_token = aeb917525a6dbc7cd2cb6e5899cff3995160ff67
+@contentType = application/json
+
+### Receptions ###
+
+# Get all receptions
+GET {{baseUrl}}/receptions/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Create new reception (Receptionist only)
+POST {{baseUrl}}/receptions/
+Authorization: Token {{receptionist_token}}
+Content-Type: {{contentType}}
+
+{
+    "customer": 1,
+    "tv": 1,
+    "initial_damage": "No power",
+    "initial_tax": 50.00,
+    "in_guarantee": false,
+    "have_guarantee": false,
+    "priority": 2,
+    "notes": "Customer says TV suddenly stopped working"
+}
+
+###
+@receptionId = 1
+
+# Get specific reception
+GET {{baseUrl}}/receptions/{{receptionId}}/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+### Reception Workflow Actions ###
+
+# Start inspection (Technician only)
+POST {{baseUrl}}/receptions/{{receptionId}}/start_inspection/
+Authorization: Token {{technician_token}}
+Content-Type: {{contentType}}
+
+{
+    "current_place": "maintenance"
+}
+
+###
+
+# Submit inspection feedback (Technician only)
+POST {{baseUrl}}/receptions/{{receptionId}}/submit_feedback/
+Authorization: Token {{technician_token}}
+Content-Type: {{contentType}}
+
+{
+    "findings": "Power supply unit failure",
+    "estimated_cost": 120.00,
+    "current_place": "maintenance"
+}
+
+###
+
+# Refuse repair (Receptionist only)
+POST {{baseUrl}}/receptions/{{receptionId}}/refuse_repair/
+Authorization: Token {{receptionist_token}}
+Content-Type: {{contentType}}
+
+{
+    "reason": "Customer declined repair estimate"
+}
+
+###
+
+# Start maintenance (Technician only)
+POST {{baseUrl}}/receptions/{{receptionId}}/start_maintenance/
+Authorization: Token {{technician_token}}
+Content-Type: {{contentType}}
+
+{
+    "actual_damage": "Failed power board and capacitor issues",
+    "final_cost": 150.00,
+    "current_place": "maintenance",
+    "expected_completion_date": "2025-04-20"
+}
+
+###
+
+# Mark as ready for pickup (Technician only)
+POST {{baseUrl}}/receptions/{{receptionId}}/ready_for_pickup/
+Authorization: Token {{technician_token}}
+Content-Type: {{contentType}}
+
+{
+    "current_place": "reception"
+}
+
+###
+
+# Complete delivery (Receptionist only)
+POST {{baseUrl}}/receptions/{{receptionId}}/complete_delivery/
+Authorization: Token {{receptionist_token}}
+Content-Type: {{contentType}}
+
+{
+    "delivery_method": "Customer pickup",
+    "current_place": "customer"
+}
+
+### Calls ###
+
+# Get all calls for a reception
+GET {{baseUrl}}/calls/?reception_id={{receptionId}}
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Create call record (Receptionist/Technician)
+POST {{baseUrl}}/calls/
+Authorization: Token {{receptionist_token}}
+Content-Type: {{contentType}}
+
+{
+    "reception": {{receptionId}},
+    "call_type": "pickup_device",
+    "summary": "Informed customer device is ready",
+    "follow_up_required": true,
+    "follow_up_date": "2025-04-18T14:00:00Z"
+}
+
+### Repair Notes ###
+
+# Get all repair notes for a reception
+GET {{baseUrl}}/repair-notes/?reception_id={{receptionId}}
+Authorization: Token {{technician_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Create repair note (Technician only)
+POST {{baseUrl}}/repair-notes/
+Authorization: Token {{technician_token}}
+Content-Type: {{contentType}}
+
+{
+    "reception": {{receptionId}},
+    "note": "Replaced power board and all capacitors. Tested for 2 hours - stable."
+}
+
+### Filters ###
+
+# Filter receptions by status
+GET {{baseUrl}}/receptions/?status=in_maintenance
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Filter receptions by customer
+GET {{baseUrl}}/receptions/?customer=1
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Filter receptions by priority
+GET {{baseUrl}}/receptions/?priority=2
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Filter receptions by date range
+GET {{baseUrl}}/receptions/?start_date=2025-04-01&end_date=2025-04-30
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
