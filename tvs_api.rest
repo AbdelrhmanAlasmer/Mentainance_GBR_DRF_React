@@ -1,0 +1,172 @@
+@baseUrl = http://127.0.0.1:8000/tvs
+@manager_token = 99f984c28253206f0717dd23e4171d517e48deae	
+@receptionist_token = 6e9ed5edcd5cf074bc4f2c0010f3a3fd7b059a74
+
+@technician_token=aeb917525a6dbc7cd2cb6e5899cff3995160ff67
+
+@contentType = application/json
+
+
+### Authentication - Get Token (if using token auth)
+# POST {{baseUrl}}/auth/login/
+# Content-Type: {{contentType}}
+#
+# {
+#     "username": "your_username",
+#     "password": "your_password"
+# }
+
+### TV Types ###
+
+# Get all TV types
+GET {{baseUrl}}/tv-types/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Create new TV type (Manager only)
+POST {{baseUrl}}/tv-types/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{
+    "name": "OLED"
+}
+
+###
+
+# Get specific TV type
+GET {{baseUrl}}/tv-types/1/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Update TV type (Manager only)
+PUT {{baseUrl}}/tv-types/1/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{
+    "name": "QLED"
+}
+
+###
+
+# Delete TV type (Manager only)
+DELETE {{baseUrl}}/tv-types/1/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+### TV Models ###
+
+# Get all TV models
+GET {{baseUrl}}/tv-models/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Get TV models filtered by type
+GET {{baseUrl}}/tv-models/?type_id=1
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Create new TV model (Manager only)
+POST {{baseUrl}}/tv-models/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{
+    "name": "X90J",
+    "type": 1
+}
+
+###
+
+# Update TV model (Manager only)
+PATCH {{baseUrl}}/tv-models/1/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{
+    "name": "X90K"
+}
+
+### TVs ###
+
+# Get all TVs
+GET {{baseUrl}}/tvs/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Get TVs filtered by type
+GET {{baseUrl}}/tvs/?type_id=1
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Get TVs filtered by model
+GET {{baseUrl}}/tvs/?model_id=1
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+###
+
+# Create new TV (Manager only)
+POST {{baseUrl}}/tvs/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{
+    "serial_number": "SN12345678",
+    "type": 1,
+    "model": 1
+}
+
+###
+
+# Update TV (Manager or Self)
+PUT {{baseUrl}}/tvs/1/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{
+    "serial_number": "SN12345678",
+    "type": 1,
+    "model": 1,
+    "status": "IN_STOCK"
+}
+
+### Custom Actions ###
+
+# Mark TV for repair (Technician only)
+POST {{baseUrl}}/tvs/1/mark_for_repair/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{}
+
+###
+
+# Check in TV (Receptionist only)
+POST {{baseUrl}}/tvs/1/check_in/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{}
+
+###
+
+# Check out TV (Receptionist only)
+POST {{baseUrl}}/tvs/1/check_out/
+Authorization: Token {{manager_token}}
+Content-Type: {{contentType}}
+
+{}

@@ -2,52 +2,20 @@ from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth import authenticate
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'is_staff')
+        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'is_staff', 'is_active')
 
-
-class RegisterReceptionistSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('email', 'password', 'first_name', 'last_name', 'role')
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'role': {'read_only': True}  # Receptionist role should be set automatically
-        }
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
-            role='receptionist'  # Force receptionist role
-        )
-        return user  # Must return the created instance
-
-
-class RegisterManagerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'password', 'first_name', 'last_name', 'role')
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'role': {'read_only': True}  # Manager role should be set automatically
-        }
-
-    def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
-            role='manager'  # Force manager role
-        )
-        return user  # This was missing in your original code!
-
+        user = CustomUser.objects.create_user(**validated_data)
+        return user
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -58,3 +26,12 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Incorrect Credentials")
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'email')

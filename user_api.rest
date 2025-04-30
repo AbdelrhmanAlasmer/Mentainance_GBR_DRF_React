@@ -1,42 +1,10 @@
 @baseUrl = http://127.0.0.1:8000/user
-@manager_token = 1c3ce1a3b850a8340b42f505d24be5395689441f	
-@receptionist_token = your_receptionist_token_here
+@manager_token = 99f984c28253206f0717dd23e4171d517e48deae	
+@receptionist_token = 6e9ed5edcd5cf074bc4f2c0010f3a3fd7b059a74
+
+@technician_token=aeb917525a6dbc7cd2cb6e5899cff3995160ff67
 
 ### 1. Login as Manager (get this token first)
-POST {{baseUrl}}/login/
-Content-Type: application/json
-Authorization: Token {{manager_token}}
-
-{
-    "email": "manager@example.com",
-    "password": "managerpassword123"
-}
-
-### 2. Register New Manager (requires manager token)
-POST {{baseUrl}}/managers/register/
-Content-Type: application/json
-Authorization: Token {{manager_token}}
-
-{
-    "email": "newmanager@example.com",
-    "password": "newmanager123",
-    "first_name": "New",
-    "last_name": "Manager"
-}
-
-### 3. Register New Receptionist (requires manager token)
-POST {{baseUrl}}/receptionists/register/
-Content-Type: application/json
-Authorization: Token {{manager_token}}
-
-{
-    "email": "receptionist@example.com",
-    "password": "receptionist123",
-    "first_name": "Front",
-    "last_name": "Desk"
-}
-
-### 4. Login as Receptionist
 POST {{baseUrl}}/login/
 Content-Type: application/json
 
@@ -45,9 +13,55 @@ Content-Type: application/json
     "password": "123456"
 }
 
+### 2. Register New Manager (requires manager token)
+POST {{baseUrl}}/register/
+Content-Type: application/json
+Authorization: Token {{manager_token}}
+
+{
+    "email": "aaawmanager@example.com",
+    "password": "newmanager123",
+    "first_name": "New",
+    "last_name": "Manager",
+    "role": "technician"
+}
+
+
+### 3. Login as New Manager (get this token first)
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "aaawmanager@example.com",
+    "password": "newmanager123"
+}
+
+
+### 3. Register New Receptionist (requires manager token)
+POST {{baseUrl}}/register/
+Content-Type: application/json
+Authorization: Token {{manager_token}}
+
+{
+    "email": "receptionist@example.com",
+    "password": "receptionist123",
+    "first_name": "Front",
+    "last_name": "Desk",
+    "role": "receptionist"
+}
+
+### 4. Login as Receptionist
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "receptionist@example.com",
+    "password": "receptionist123"
+}
+
 
 ### 5. Get Current User Details (works with any authenticated user)
-GET {{baseUrl}}/user/
+GET {{baseUrl}}/profile/
 Authorization: Token {{receptionist_token}}
 Content-Type: application/json
 
@@ -65,6 +79,12 @@ Content-Type: application/json
 POST {{baseUrl}}/logout/
 Authorization: Token {{receptionist_token}}
 Content-Type: application/json
+
+###
+POST {{baseUrl}}/logout/
+Authorization: Token {{manager_token}}
+Content-Type: application/json
+
 
 ### 9. Verify Logout by Trying to Access Dashboard Again (should fail)
 GET {{baseUrl}}/dashboard/receptionist/

@@ -1,0 +1,27 @@
+@baseUrl = http://127.0.0.1:8000/customers
+@manager_token = 99f984c28253206f0717dd23e4171d517e48deae	
+@receptionist_token = 6e9ed5edcd5cf074bc4f2c0010f3a3fd7b059a74
+
+@technician_token=aeb917525a6dbc7cd2cb6e5899cff3995160ff67
+
+@contentType = application/json
+
+##
+GET {{baseUrl}}/customers/
+Content-Type: {{contentType}}
+Authorization: Token {{manager_token}}
+
+##add customer
+POST {{baseUrl}}/customers/
+Content-Type: {{contentType}}
+Authorization: Token {{manager_token}}
+
+{
+  "name": "abdoooooos",
+  "email": "user@example.com",
+  "address": "string",
+  "city": "string",
+  "notes": "string",
+  "is_active": true
+}
+

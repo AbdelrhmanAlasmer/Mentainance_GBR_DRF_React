@@ -1,0 +1,183 @@
+digraph ERD {
+    rankdir="LR";
+    node [shape=box, fontname="helvetica", fontsize=10];
+    edge [fontname="helvetica", fontsize=8, arrowhead=vee, arrowsize=0.5];
+
+    // User Models
+    subgraph cluster_users {
+        label="Users App";
+        style=filled;
+        color=lightgrey;
+        
+        CustomUser [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>CustomUser</b></td></tr>
+                <tr><td align="left">email (EmailField)</td></tr>
+                <tr><td align="left">first_name (CharField)</td></tr>
+                <tr><td align="left">last_name (CharField)</td></tr>
+                <tr><td align="left">is_staff (BooleanField)</td></tr>
+                <tr><td align="left">is_active (BooleanField)</td></tr>
+                <tr><td align="left">date_joined (DateTimeField)</td></tr>
+                <tr><td align="left">role (CharField)</td></tr>
+            </table>
+            >
+        ];
+    }
+
+    // TV Models
+    subgraph cluster_tvs {
+        label="TVs App";
+        style=filled;
+        color=lightgrey;
+        
+        TVType [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>TVType</b></td></tr>
+                <tr><td align="left">name (CharField)</td></tr>
+            </table>
+            >
+        ];
+        
+        TVModel [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>TVModel</b></td></tr>
+                <tr><td align="left">name (CharField)</td></tr>
+                <tr><td align="left">type (FK to TVType)</td></tr>
+            </table>
+            >
+        ];
+        
+        TV [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>TV</b></td></tr>
+                <tr><td align="left">serial_number (CharField)</td></tr>
+                <tr><td align="left">type (FK to TVType)</td></tr>
+                <tr><td align="left">model (FK to TVModel)</td></tr>
+            </table>
+            >
+        ];
+    }
+
+    // Customer Models
+    subgraph cluster_customers {
+        label="Customers App";
+        style=filled;
+        color=lightgrey;
+        
+        Customer [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>Customer</b></td></tr>
+                <tr><td align="left">name (CharField)</td></tr>
+                <tr><td align="left">email (EmailField)</td></tr>
+                <tr><td align="left">address (TextField)</td></tr>
+                <tr><td align="left">city (CharField)</td></tr>
+                <tr><td align="left">notes (TextField)</td></tr>
+                <tr><td align="left">created_at (DateTimeField)</td></tr>
+                <tr><td align="left">is_active (BooleanField)</td></tr>
+            </table>
+            >
+        ];
+    }
+
+    // Reception Models
+    subgraph cluster_receptions {
+        label="Receptions App";
+        style=filled;
+        color=lightgrey;
+        
+        Reception [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>Reception</b></td></tr>
+                <tr><td align="left">case_number (CharField)</td></tr>
+                <tr><td align="left">initial_damage (TextField)</td></tr>
+                <tr><td align="left">the_date (DateTimeField)</td></tr>
+                <tr><td align="left">initial_tax (DecimalField)</td></tr>
+                <tr><td align="left">initial_cost (DecimalField)</td></tr>
+                <tr><td align="left">final_cost (DecimalField)</td></tr>
+                <tr><td align="left">status (CharField)</td></tr>
+                <tr><td align="left">current_place (CharField)</td></tr>
+                <tr><td align="left">returned (BooleanField)</td></tr>
+                <tr><td align="left">who_receive_it (CharField)</td></tr>
+                <tr><td align="left">in_guarantee (BooleanField)</td></tr>
+                <tr><td align="left">have_guarantee (BooleanField)</td></tr>
+                <tr><td align="left">warranty_expiry_date (DateField)</td></tr>
+                <tr><td align="left">check_tv_date (DateTimeField)</td></tr>
+                <tr><td align="left">check_feedback_date (DateTimeField)</td></tr>
+                <tr><td align="left">check_feedback_description (TextField)</td></tr>
+                <tr><td align="left">refused_reason (TextField)</td></tr>
+                <tr><td align="left">refused_date (DateTimeField)</td></tr>
+                <tr><td align="left">damage_full_description (TextField)</td></tr>
+                <tr><td align="left">maintenance_date (DateTimeField)</td></tr>
+                <tr><td align="left">expected_completion_date (DateField)</td></tr>
+                <tr><td align="left">given_to_customer_date (DateTimeField)</td></tr>
+                <tr><td align="left">how_actually_take_it (CharField)</td></tr>
+                <tr><td align="left">notes (TextField)</td></tr>
+                <tr><td align="left">priority (PositiveSmallIntegerField)</td></tr>
+            </table>
+            >
+        ];
+        
+        ReceptionPhoto [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>ReceptionPhoto</b></td></tr>
+                <tr><td align="left">photo (ImageField)</td></tr>
+                <tr><td align="left">description (CharField)</td></tr>
+                <tr><td align="left">uploaded_at (DateTimeField)</td></tr>
+            </table>
+            >
+        ];
+        
+        Call [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>Call</b></td></tr>
+                <tr><td align="left">call_type (CharField)</td></tr>
+                <tr><td align="left">summary (TextField)</td></tr>
+                <tr><td align="left">datetime (DateTimeField)</td></tr>
+                <tr><td align="left">successful (BooleanField)</td></tr>
+                <tr><td align="left">follow_up_required (BooleanField)</td></tr>
+                <tr><td align="left">follow_up_date (DateTimeField)</td></tr>
+                <tr><td align="left">notes (TextField)</td></tr>
+            </table>
+            >
+        ];
+        
+        RepairNote [
+            label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr><td bgcolor="#e6e6e6"><b>RepairNote</b></td></tr>
+                <tr><td align="left">note (TextField)</td></tr>
+                <tr><td align="left">created_at (DateTimeField)</td></tr>
+                <tr><td align="left">is_internal (BooleanField)</td></tr>
+            </table>
+            >
+        ];
+    }
+
+    // Relationships
+    TVModel -> TVType [label="type (1:N)"];
+    TV -> TVType [label="type (1:N)"];
+    TV -> TVModel [label="model (1:N)"];
+    
+    Reception -> Customer [label="customer (1:N)"];
+    Reception -> TV [label="tv (1:N)"];
+    Reception -> CustomUser [label="receptionist (1:N)"];
+    Reception -> CustomUser [label="check_tv_eng (1:N)"];
+    Reception -> CustomUser [label="check_feedback_eng (1:N)"];
+    Reception -> CustomUser [label="maintenance_eng (1:N)"];
+    Reception -> CustomUser [label="given_to_customer_receptionist (1:N)"];
+    Reception -> ReceptionPhoto [label="reception_photos (M:N)"];
+    
+    Call -> Reception [label="reception (1:N)"];
+    Call -> CustomUser [label="caller (1:N)"];
+    
+    RepairNote -> Reception [label="reception (1:N)"];
+    RepairNote -> CustomUser [label="author (1:N)"];
+}
